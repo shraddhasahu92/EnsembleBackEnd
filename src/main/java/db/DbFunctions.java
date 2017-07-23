@@ -29,15 +29,16 @@ public class DbFunctions {
 
         try {
             Connection conn = DbConnect.openConnection();
-            String sql = "INSERT INTO users(unique_id, name, email, encrypted_password, salt, created_at) VALUES(?, ?, ?, ?, ?, NOW())";
+            String sql = "INSERT INTO users(name, email, encrypted_password, salt, created_at) VALUES( ?, ?, ?, ?, NOW())";
             PreparedStatement stmt = conn.prepareStatement(sql);
 
 
-            stmt.setLong(1,uid.incrementAndGet());
-            stmt.setString(2,name);
-            stmt.setString(3,email);
-            stmt.setString(4,encodedPassword);
-            stmt.setString(5,"salt");
+
+//            stmt.setLong(1,uid.incrementAndGet());
+            stmt.setString(1,name);
+            stmt.setString(2,email);
+            stmt.setString(3,encodedPassword);
+            stmt.setString(4,"salt");
 
             stmt.execute();
             DbConnect.closeConnection(conn);
@@ -89,9 +90,9 @@ public class DbFunctions {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()){
-                boolean authenticated = Encoder.match(password,rs.getString(5));
+                boolean authenticated = Encoder.match(password,rs.getString(4));
                 if(authenticated) {
-                    user = new User(rs.getString(3), email, password);
+                    user = new User(rs.getString(2), email, password);
                     System.out.println("Successfully authenticated");
                 }
                 else {
