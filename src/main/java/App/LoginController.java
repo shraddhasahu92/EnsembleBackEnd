@@ -1,12 +1,8 @@
 package App;
 
 import db.DbFunctions;
-import login.User;
-import org.apache.catalina.connector.Response;
 import org.springframework.web.bind.annotation.*;
 import response.LoginResponse;
-
-import java.io.PrintWriter;
 
 /**
  * Created by Shraddha on 21-07-2017.

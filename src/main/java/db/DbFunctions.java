@@ -1,6 +1,6 @@
 package db;
 
-import login.User;
+import dao.User;
 import response.LoginResponse;
 import response.RegisterResponse;
 
@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Shraddha on 21-07-2017.
@@ -24,7 +23,7 @@ public class DbFunctions {
         User user = isUserExisted(email);
         if(user != null){
             // User already exists
-            registerResponse = new RegisterResponse("2","User already exists with email " + email,0L,null);
+            registerResponse = new RegisterResponse(true,"User already exists with email " + email,0L,null);
             return registerResponse;
         }
 
@@ -49,13 +48,13 @@ public class DbFunctions {
             user = isUserExisted(email);
 
             //Registeration succesfull
-            registerResponse = new RegisterResponse("false","",user.getId(),user);
+            registerResponse = new RegisterResponse(false,"",user.getId(),user);
 
         }catch (SQLException e){
             e.printStackTrace();
 
             //Error while inserting userdata
-            registerResponse = new RegisterResponse("1","Unknown error occurred in registration!",0L,null);
+            registerResponse = new RegisterResponse(true,"Unknown error occurred in registration!",0L,null);
         }
         return registerResponse;
     }
@@ -101,11 +100,11 @@ public class DbFunctions {
 
         if(user != null && Encoder.match(password,user.getEncodedpwd())) {
             System.out.println("successfully logged in!!");
-            loginResponse = new LoginResponse("false","",user.getId(),"","",user);
+            loginResponse = new LoginResponse(false,"",user.getId(),"","",user);
         }
         else{
             System.out.println("Login credentials are incorrect!!");
-            loginResponse = new LoginResponse("1","Login credentials are incorrect. Please try again!",0L,"0","login",null);
+            loginResponse = new LoginResponse(true,"Login credentials are incorrect. Please try again!",0L,"0", "login",null);
         }
 
 

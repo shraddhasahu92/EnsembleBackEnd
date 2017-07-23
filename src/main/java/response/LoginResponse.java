@@ -1,13 +1,15 @@
 package response;
 
-import login.User;
+import dao.User;
 
 /**
  * Created by Shraddha on 23-07-2017.
  */
+
+
 public class LoginResponse {
 
-    String error;
+    Boolean error;
     String error_msg;
     Long uid;
     String success;
@@ -15,7 +17,7 @@ public class LoginResponse {
     User user;
 
 
-    public LoginResponse(String error, String error_msg, Long uid, String success, String tag, User user) {
+    public LoginResponse(Boolean error, String error_msg, Long uid, String success, String tag, User user) {
         this.error = error;
         this.error_msg = error_msg;
         this.uid = uid;
@@ -24,7 +26,7 @@ public class LoginResponse {
         this.user = user;
     }
 
-    public String getError() {
+    public Boolean getError() {
         return error;
     }
 

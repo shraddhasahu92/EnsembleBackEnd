@@ -1,4 +1,4 @@
-package login;
+package dao;
 
 /**
  * Created by Shraddha on 22-07-2017.
