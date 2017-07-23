@@ -18,7 +18,7 @@ public class RegisterController {
     public RegisterResponse register(@RequestParam(value = "name", defaultValue = "guest") String name, @RequestParam(value = "email", defaultValue = "user@example.com")
             String email, @RequestParam(value = "password",defaultValue = "1234") String password){
 
-        System.out.println("Request received!!!!!!!!!");
+        System.out.println("Register request received!!!!!!!!!");
 
 
         return DbFunctions.storeUser(name,email,password);
