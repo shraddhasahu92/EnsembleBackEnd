@@ -14,7 +14,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by Shraddha on 21-07-2017.
  */
 
-//Conflict Comment
+//Commit test
+    
 public class DbFunctions {
 
     public static RegisterResponse storeUser(String name, String email, String password ){
