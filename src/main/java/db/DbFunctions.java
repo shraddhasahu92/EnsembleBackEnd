@@ -1,6 +1,7 @@
 package db;
 
 import login.User;
+import response.LoginResponse;
 import response.RegisterResponse;
 
 import java.sql.Connection;
@@ -20,7 +21,7 @@ public class DbFunctions {
         User user = isUserExisted(email);
         if(user != null){
             // User already exists
-            registerResponse = new RegisterResponse("2","User already exists with email " + email,user.getId(),user);
+            registerResponse = new RegisterResponse("2","User already exists with email " + email,0L,null);
             return registerResponse;
         }
 
@@ -90,25 +91,22 @@ public class DbFunctions {
         return user;
     }
 
-    public static User authenticateUser(String email, String password){
+    public static LoginResponse authenticateUser(String email, String password){
 
         User user = isUserExisted(email);
+        LoginResponse loginResponse = null;
 
-        if(user == null) {
-            System.out.println("email does not exist!");
-            return null;
-        }
-
-        else if(Encoder.match(password,user.getEncodedpwd()))
-        {
+        if(user != null && Encoder.match(password,user.getEncodedpwd())) {
             System.out.println("successfully logged in!!");
+            loginResponse = new LoginResponse("false","",user.getId(),"","",user);
         }
         else{
-            System.out.println("Incorrect password!");
+            System.out.println("Login credentials are incorrect!!");
+            loginResponse = new LoginResponse("1","Login credentials are incorrect. Please try again!",0L,"0","login",null);
         }
 
 
-        return user;
+        return loginResponse;
     }
 
 

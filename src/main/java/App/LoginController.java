@@ -4,6 +4,7 @@ import db.DbFunctions;
 import login.User;
 import org.apache.catalina.connector.Response;
 import org.springframework.web.bind.annotation.*;
+import response.LoginResponse;
 
 import java.io.PrintWriter;
 
@@ -15,7 +16,7 @@ import java.io.PrintWriter;
 public class LoginController {
 
     @RequestMapping("/login")
-    public User login(@RequestParam(value = "email", defaultValue = "user@example.com")
+    public LoginResponse login(@RequestParam(value = "email", defaultValue = "user@example.com")
             String email, @RequestParam(value = "password",defaultValue = "1234") String password){
 
         System.out.println(" Login Request received!!!!!!!!!");

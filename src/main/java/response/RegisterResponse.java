@@ -30,6 +30,10 @@ public class RegisterResponse {
     public User getUser() {
         return user;
     }
+
+    public Long getUid() {
+        return uid;
+    }
 }
 
 
