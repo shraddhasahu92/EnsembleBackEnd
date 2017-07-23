@@ -4,14 +4,24 @@ package login;
  * Created by Shraddha on 22-07-2017.
  */
 public class User {
+    private long id;
     private String name;
     private String email;
-    private String password;
+    private String encodedpwd;
+    private String createdAt;
+    private  String updatedAt;
 
-    public User(String name, String email, String password) {
+    public User(long id, String name, String email, String encodedpwd, String createdAt, String updatedAt) {
+        this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.encodedpwd = encodedpwd;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -22,7 +32,15 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getEncodedpwd() {
+        return encodedpwd;
     }
 }

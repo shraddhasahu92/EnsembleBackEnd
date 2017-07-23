@@ -1,15 +1,12 @@
 package db;
 
-import com.sun.org.apache.regexp.internal.RE;
 import login.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import response.RegisterResponse;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.*;
-import java.util.Formatter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -17,12 +14,14 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class DbFunctions {
 
-    private static final AtomicLong uid = new AtomicLong();
+    public static RegisterResponse storeUser(String name, String email, String password ){
 
-    public static boolean storeUser(String name, String email, String password ){
-
-        if(isUserExisted(email)){
-            return false;
+        RegisterResponse registerResponse;
+        User user = isUserExisted(email);
+        if(user != null){
+            // User already exists
+            registerResponse = new RegisterResponse("2","User already exists with email " + email,user.getId(),user);
+            return registerResponse;
         }
 
         String encodedPassword = Encoder.encode(password);
@@ -43,18 +42,27 @@ public class DbFunctions {
             stmt.execute();
             DbConnect.closeConnection(conn);
 
+            user = isUserExisted(email);
+
+            //Registeration succesfull
+            registerResponse = new RegisterResponse("false","",user.getId(),user);
+
         }catch (SQLException e){
             e.printStackTrace();
-            return false;
+
+            //Error while inserting userdata
+            registerResponse = new RegisterResponse("1","Unknown error occurred in registration!",0L,null);
         }
-        return true;
+        return registerResponse;
     }
 
-    public static boolean isUserExisted(String email){
+    public static User isUserExisted(String email){
+
+        User user = null;
         try {
             Connection conn = DbConnect.openConnection();
 
-            String sql = "SELECT email FROM users where email = ?";
+            String sql = "SELECT * FROM users where email = ?";
 
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1,email);
@@ -62,48 +70,43 @@ public class DbFunctions {
 
             ResultSet rs = stmt.executeQuery();
 
-            if(rs.next())
-                return true;
+            if(rs.next()){
+                Long id = rs.getLong(1);
+                String name = rs.getString(2);
+                String em = rs.getString(3);
+                String encodedPwd = rs.getString(4);
+                String createdAt = rs.getString(6);
+                String updatedAt = rs.getString(7);
+
+                user = new User(id,name,em,encodedPwd,createdAt,updatedAt);
+            }
+//                return true;
 
             DbConnect.closeConnection(conn);
         }catch (SQLException e){
             e.printStackTrace();
         }
 
-        return false;
+        return user;
     }
 
     public static User authenticateUser(String email, String password){
 
-        if(!isUserExisted(email)) {
+        User user = isUserExisted(email);
+
+        if(user == null) {
             System.out.println("email does not exist!");
             return null;
         }
 
-        User user = null;
-
-        try {
-            Connection conn = DbConnect.openConnection();
-            String sql = "select * from users where email = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,email);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()){
-                boolean authenticated = Encoder.match(password,rs.getString(4));
-                if(authenticated) {
-                    user = new User(rs.getString(2), email, password);
-                    System.out.println("Successfully authenticated");
-                }
-                else {
-                    System.out.println("Incorrect password");
-                }
-            }
-
-            DbConnect.closeConnection(conn);
-        }catch (SQLException e){
-            e.printStackTrace();
+        else if(Encoder.match(password,user.getEncodedpwd()))
+        {
+            System.out.println("successfully logged in!!");
         }
+        else{
+            System.out.println("Incorrect password!");
+        }
+
 
         return user;
     }

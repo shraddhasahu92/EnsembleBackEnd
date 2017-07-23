@@ -8,13 +8,14 @@ import login.User;
 public class RegisterResponse {
     String error;
     String error_msg;
-    String uid;
+    Long uid;
     User user;
 
 
-    public RegisterResponse(String error, String error_msg, User user) {
+    public RegisterResponse(String error, String error_msg,Long uid, User user) {
         this.error = error;
         this.error_msg = error_msg;
+        this.uid = uid;
         this.user = user;
     }
 
