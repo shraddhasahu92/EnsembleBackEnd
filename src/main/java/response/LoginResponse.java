@@ -2,6 +2,8 @@ package response;
 
 import dao.User;
 
+import java.util.ArrayList;
+
 /**
  * Created by Shraddha on 23-07-2017.
  */
@@ -14,16 +16,16 @@ public class LoginResponse {
     Long uid;
     String success;
     String tag;
-    User user;
+    ArrayList<User> users;
 
 
-    public LoginResponse(Boolean error, String error_msg, Long uid, String success, String tag, User user) {
+    public LoginResponse(Boolean error, String error_msg, Long uid, String success, String tag, ArrayList<User> users  ) {
         this.error = error;
         this.error_msg = error_msg;
         this.uid = uid;
         this.success = success;
         this.tag = tag;
-        this.user = user;
+        this.users = users;
     }
 
     public Boolean getError() {
@@ -46,7 +48,7 @@ public class LoginResponse {
         return tag;
     }
 
-    public User getUser() {
-        return user;
+    public ArrayList<User>  getUsers() {
+        return users;
     }
 }

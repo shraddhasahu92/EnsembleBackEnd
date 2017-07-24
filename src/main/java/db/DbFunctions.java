@@ -4,10 +4,12 @@ import dao.User;
 import response.LoginResponse;
 import response.RegisterResponse;
 
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by Shraddha on 21-07-2017.
@@ -93,14 +95,37 @@ public class DbFunctions {
         return user;
     }
 
-    public static LoginResponse authenticateUser(String email, String password){
+    public static LoginResponse authenticateUser(String email, String password)  {
 
         User user = isUserExisted(email);
         LoginResponse loginResponse = null;
 
         if(user != null && Encoder.match(password,user.getEncodedpwd())) {
             System.out.println("successfully logged in!!");
-            loginResponse = new LoginResponse(false,"",user.getId(),"","",user);
+            try {
+                Connection conn = DbConnect.openConnection();
+                String sql = "select * from users";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery();
+                ArrayList<User> userList = new ArrayList<>();
+                while (rs.next()){
+                    long id = rs.getLong(1);
+                    String name = rs.getString(2);
+                    String email_ = rs.getString(3);
+                    String encodedPasssword = rs.getString(4);
+                    String createdAt = rs.getString(6);
+                    String updatedAt = rs.getString(7);
+                    User usr =new User(id, name,email_,encodedPasssword,createdAt,updatedAt);
+                    userList.add(usr);
+                }
+
+                loginResponse = new LoginResponse(false,"",user.getId(),"Successful","Login",userList);
+
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+            // loginResponse = new LoginResponse(false,"",user.getId(),"","",user);
         }
         else{
             System.out.println("Login credentials are incorrect!!");
